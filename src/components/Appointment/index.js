@@ -6,6 +6,7 @@ import Form from "./Form";
 import Empty from "./Empty";
 import Status from "./Status";
 import Confirm from "./Confirm";
+import Error from "./Error";
 import useVisualMode from "hooks/useVisualMode";
 
 import "components/Appointment/styles.scss";
@@ -20,6 +21,8 @@ export default function Appointment(props) {
   const CREATE = "CREATE";
   const SAVING = "SAVING";
   const CONFIRM = "CONFIRM";
+  const EDIT = "EDIT";
+  const ERROR = "ERROR";
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -39,6 +42,10 @@ export default function Appointment(props) {
     .then(() => {
       transition(SHOW);
     })
+    .catch(err => {
+      transition(ERROR);
+    });
+    
   }
 
   function delInterview(id) {
@@ -50,8 +57,19 @@ export default function Appointment(props) {
     
     let appointment_id = props.id;
 
-    props.cancelInterview(appointment_id);
-    transition(EMPTY);
+    props.cancelInterview(appointment_id)
+    .then(() => {
+      transition(EMPTY);
+    })
+    .catch(err => {
+      transition(ERROR);
+    });
+    
+  }
+
+  function onEdit(id) {
+    let appointment_id = props.id;
+    transition(EDIT);
   }
 
 
@@ -66,6 +84,8 @@ export default function Appointment(props) {
 
     {mode === SAVING && <Status />}
 
+    {mode === ERROR && <Error />}
+
     {mode === CONFIRM && <Confirm 
       message = "Are you sure you want to delete this interview?"
       confirmDelete = {confirmDelete}
@@ -77,13 +97,20 @@ export default function Appointment(props) {
             onCancel={() => back()}   
             />}
     
+    {mode === EDIT && <Form 
+             interviewers={props.interviewers} // interviewers:Array
+             onSave={save}              // onSave:Function
+             onCancel={() => back()}  
+             name={props.interview.student} 
+            />}
 
     {mode === SHOW && (
     <Show
-      student={props.interview.student}
-      interviewer={props.interview.interviewer}
-      delInterview={delInterview}
-  />
+    student={props.interview.student}
+    interviewer={props.interview.interviewer}
+    delInterview={delInterview}
+      onEdit={onEdit}
+    />
 )}
 
 
