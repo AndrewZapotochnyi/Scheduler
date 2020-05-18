@@ -5,6 +5,7 @@ import Show from "./Show";
 import Form from "./Form";
 import Empty from "./Empty";
 import Status from "./Status";
+import Confirm from "./Confirm";
 import useVisualMode from "hooks/useVisualMode";
 
 import "components/Appointment/styles.scss";
@@ -18,6 +19,7 @@ export default function Appointment(props) {
   const SHOW = "SHOW";
   const CREATE = "CREATE";
   const SAVING = "SAVING";
+  const CONFIRM = "CONFIRM";
 
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
@@ -39,15 +41,21 @@ export default function Appointment(props) {
     })
   }
 
-  // const appointment = {
-  //   ...state.appointments[id],
-  //   interview: { ...interview }
-  // };
+  function delInterview(id) {
+    transition(CONFIRM);
+  }
 
-  // const appointments = {
-  //   ...state.appointments,
-  //   [id]: appointment
-  // };
+  function confirmDelete(id) {
+
+    
+    let appointment_id = props.id;
+
+    props.cancelInterview(appointment_id);
+    transition(EMPTY);
+  }
+
+
+ 
 
   return (
     <article className="appointment" data-testid="appointment">
@@ -57,6 +65,11 @@ export default function Appointment(props) {
     {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
 
     {mode === SAVING && <Status />}
+
+    {mode === CONFIRM && <Confirm 
+      message = "Are you sure you want to delete this interview?"
+      confirmDelete = {confirmDelete}
+    />}
 
     {mode === CREATE && <Form 
             interviewers={props.interviewers} // interviewers:Array
@@ -69,6 +82,7 @@ export default function Appointment(props) {
     <Show
       student={props.interview.student}
       interviewer={props.interview.interviewer}
+      delInterview={delInterview}
   />
 )}
 

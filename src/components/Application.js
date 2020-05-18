@@ -43,25 +43,19 @@ export default function Application(props) {
   // const [days, setDays] = useState([]);
 
   function bookInterview(id, interview) {
-
-    
-    console.log("Enter function", id, interview);
-
-
+    // console.log("Enter function", id, interview);
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
     };
 
-    console.log("Appointment: ",appointment);
-
+    // console.log("Appointment: ",appointment);
     const appointments = {
       ...state.appointments,
       [id]: appointment
     };
 
-    console.log("Appointments: ", appointments);
-
+    // console.log("Appointments: ", appointments);
     return axios
       .put(`http://localhost:8001/api/appointments/${id}`, appointment)
       .then(res => {
@@ -71,22 +65,35 @@ export default function Application(props) {
         })
     });
 
-    // setState({
-    //   ...state,
-    //   appointments
-    // });
   };
 
-  // function save(name, interviewer) {
-  //   const interview = {
-  //     student: name,
-  //     interviewer
-  //   };
-  //   console.log(interview);
+  function cancelInterview(id) {
+    // console.log("Enter function", id, interview);
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
 
-  //   // bookInterview()
+    console.log("Appointment: ", appointment);
 
-  // }
+    // console.log("Appointment: ",appointment);
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    // console.log("Appointments: ", appointments);
+    return axios
+      .delete(`http://localhost:8001/api/appointments/${id}`)
+      .then(res => {
+        setState({
+          ...state,
+          appointments
+        })
+    });
+
+  };
+
 
 
   useEffect(() => {
@@ -122,6 +129,7 @@ export default function Application(props) {
         interview={interview}
         bookInterview={bookInterview}
         interviewers = {interviewers}
+        cancelInterview = {cancelInterview}
       />
     );
   });
