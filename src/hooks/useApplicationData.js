@@ -3,8 +3,6 @@ import axios from 'axios';
 
 export default function useApplicationData(initial) {
 
-  
-
   const [state, setState] = useState({
     day: "Monday",
     days: [],
@@ -46,9 +44,14 @@ export default function useApplicationData(initial) {
     return axios
       .put(`http://localhost:8001/api/appointments/${id}`, appointment)
       .then(res => {
+        return axios.get(`http://localhost:8001/api/days`)
+      })
+      .then(res => {
+        const days = res.data;
         setState({
           ...state,
-          appointments
+          appointments,
+          days
         })
     });
   };
@@ -59,7 +62,7 @@ export default function useApplicationData(initial) {
       interview: null
     };
 
-    console.log("Appointment: ", appointment);
+    console.log("Current state: ", state);
 
     const appointments = {
       ...state.appointments,
@@ -69,11 +72,16 @@ export default function useApplicationData(initial) {
     return axios
       .delete(`http://localhost:8001/api/appointments/${id}`)
       .then(res => {
+        return axios.get(`http://localhost:8001/api/days`)
+      })
+      .then(response => {
+        const days = response.data;
         setState({
           ...state,
-          appointments
+          appointments,
+          days
         })
-    });
+      })
   };
 
  
