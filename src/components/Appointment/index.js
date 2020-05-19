@@ -31,20 +31,28 @@ export default function Appointment(props) {
     // console.log("RENDER STUFF",props.interview)
 
   function save(name, interviewer) {
-    const interview = {
-      student: name,
-      interviewer
-    };
+    
+    if (!name || !interviewer) {
+      console.log("NO NAME OR INTERVIEWER")
+    } else {
+      const interview = {
+        student: name,
+        interviewer
+      };
+  
+      transition(SAVING);
+  
+      props.bookInterview(props.id, interview)
+      .then(() => {
+        transition(SHOW);
+      })
+      .catch(err => {
+        transition(ERROR);
+      });
 
-    transition(SAVING);
-
-    props.bookInterview(props.id, interview)
-    .then(() => {
-      transition(SHOW);
-    })
-    .catch(err => {
-      transition(ERROR);
-    });
+    }
+    
+    
     
   }
 
@@ -54,7 +62,7 @@ export default function Appointment(props) {
 
   function confirmDelete(id) {
 
-    
+    transition(SAVING);
     let appointment_id = props.id;
 
     props.cancelInterview(appointment_id)
@@ -72,7 +80,14 @@ export default function Appointment(props) {
     transition(EDIT);
   }
 
+  function onClose(id) {
+    back();
+    back();
+  }
 
+  function errorCancel(id) {
+    back();
+  }
  
 
   return (
@@ -84,11 +99,14 @@ export default function Appointment(props) {
 
     {mode === SAVING && <Status />}
 
-    {mode === ERROR && <Error />}
+    {mode === ERROR && <Error 
+      onClose={onClose}
+    />}
 
     {mode === CONFIRM && <Confirm 
       message = "Are you sure you want to delete this interview?"
       confirmDelete = {confirmDelete}
+      onCancel = {errorCancel}
     />}
 
     {mode === CREATE && <Form 

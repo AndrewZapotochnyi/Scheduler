@@ -23,8 +23,8 @@ export default function useApplicationData(initial) {
         url: `/api/interviewers`})
     ])
       .then((all) => {
-        setState({ days: all[0].data, appointments: all[1].data, interviewers: all[2].data });
-        console.log(all);
+        setState({ ...state, days: all[0].data, appointments: all[1].data, interviewers: all[2].data });
+        // console.log(all);
     })
   }, []);
 
@@ -62,7 +62,7 @@ export default function useApplicationData(initial) {
       interview: null
     };
 
-    console.log("Current state: ", state);
+    // console.log("Current state: ", state);
 
     const appointments = {
       ...state.appointments,
