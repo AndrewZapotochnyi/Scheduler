@@ -2,11 +2,6 @@
 import React from "react";
 import Button from "../Button.js";
 
-// message={"R U SURE?"}
-// onConfirm={action("onConfirm")} //:Function to be called when the user clicks the Confirm button
-// onCancel={action("onCancel")} //:Function to be called when the user clicks the Cancel button
-
-
 export default function Confirm(props) {
 
   return (<main className="appointment__card appointment__card--confirm">

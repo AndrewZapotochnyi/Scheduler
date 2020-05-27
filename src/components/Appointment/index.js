@@ -20,6 +20,7 @@ export default function Appointment(props) {
   const SHOW = "SHOW";
   const CREATE = "CREATE";
   const SAVING = "SAVING";
+  const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
   const EDIT = "EDIT";
   const ERROR = "ERROR";
@@ -62,7 +63,7 @@ export default function Appointment(props) {
 
   function confirmDelete(id) {
 
-    transition(SAVING);
+    transition(DELETING);
     let appointment_id = props.id;
 
     props.cancelInterview(appointment_id)
@@ -97,7 +98,9 @@ export default function Appointment(props) {
     {/* {mode === EMPTY && <Empty onAdd={props.onAdd} />} */}
     {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
 
-    {mode === SAVING && <Status />}
+    {mode === SAVING && <Status message="Saving"/>}
+
+    {mode === DELETING && <Status message="Deleting"/>}
 
     {mode === ERROR && <Error 
       onClose={onClose}
